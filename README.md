@@ -19,10 +19,28 @@ Then create a new Notebook on Colab, and Ctrl+V (paste) the content.
 View the file directory on the left sidebar, which should automatically allocate an instance, and connect Google Drive by click the Drive logo.
 Google Drive should be able to connect without having to run any code and copy-and-paste passcode strings.
 
-This code is originally used in an university course project. 
+This code was originally used in an university course project. 
 As such, the techniques utilized are rudimentary. 
-System size _L_ is thus limited to 12.
+System size _L_ is thus practically limited to 12.
 If higher _L_ is desired, the exact diagonal step should be accelerated using symmetries in the Hamiltonian, or replaced with an evolution of Matrix Product State (MPS).
+
+
+
+## Tasks (v1.X.X):
+
+- [x] Publish original source code.
+- [ ] Use environment variables os.environ['running_on_colab'] instead of a bool.
+- [ ] Refactor `util` functions.
+- [ ] Read CNN hyperparameters from `.json` file.
+
+## Tasks (v2.X.X):
+
+- [ ] Store training data as eigenvectors and do partial trace in runtime.
+
+## Tasks (v3.X.X):
+
+- [ ] Advanced methods to compute eigenstates.
+- [ ] Implement "Learning phase transitions by confusion" (van Nieuwenburg et al., 2017)
 
 
 
