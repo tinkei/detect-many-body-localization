@@ -9,12 +9,15 @@ The process is orchestrated by three sets of Jupyter Notebooks:
 * Neural Network Training
 * Result Plotting
 
+When using Google Colab, `.py` codes should be uploaded to the appropriate Google Drive directory to avoid needing to re-upload them every time.
+
+Due to the difficulty in restarting long-running computations, a `shutdown_signal.txt` with content `1` could be placed at the root to gracefully exit a for-loop only when a full iteration is completed.
+
 To facilitate mounting Google Drive on Google Colab, the content should be copied to a new Notebook native to Colab.
 First upload the Notebook to Colab, then Ctrl+Shift+A (select all cells) and then Ctrl+C (copy).
 Then create a new Notebook on Colab, and Ctrl+V (paste) the content.
 View the file directory on the left sidebar, which should automatically allocate an instance, and connect Google Drive by click the Drive logo.
 Google Drive should be able to connect without having to run any code and copy-and-paste passcode strings.
-`.py` codes should be uploaded to the appropriate Google Drive directory to avoid needing to re-upload them every time.
 
 This code is originally used in an university course project. 
 As such, the techniques utilized are rudimentary. 
