@@ -12,9 +12,9 @@ where the classifcation probability is fitted with a sigmoid function to determi
 Various scaling with _W<sub>c</sub>_ are illustrated.
 
 The process is orchestrated by three sets of Jupyter Notebooks:
-* Data Generation
-* Neural Network Training
-* Result Plotting
+1. Data Generation
+2. Neural Network Training
+3. Result Plotting
 
 When using Google Colab, `.py` codes should be uploaded to the appropriate Google Drive directory to avoid needing to re-upload them every time.
 
@@ -38,16 +38,37 @@ If higher _L_ is desired, the exact diagonal step should be accelerated using sy
 - [x] Publish original source code.
 - [ ] Use environment variables os.environ['running_on_colab'] instead of a bool.
 - [ ] Refactor `util` functions.
-- [ ] Read CNN hyperparameters from `.json` file.
+- [ ] Read CNN hyperparameters from `.json` file, or import some `dict` from a `.py` file.
+- [ ] Refactor CNN class to use inheritance.
 
 ## Tasks (v2.X.X):
 
-- [ ] Store training data as eigenvectors and do partial trace in runtime.
+- [x] Store training data as eigenvectors.  
+  May not work as intended, because O(4<sup>n</sup>) (`rho` mode) = O(2<sup>2n</sup>) < O(2<sup>L</sup>) (`EVW` mode), when _2n < L_.
+- [ ] Do partial trace in runtime.  
 
 ## Tasks (v3.X.X):
 
 - [ ] Advanced methods to compute eigenstates.
 - [ ] Implement "Learning phase transitions by confusion" (van Nieuwenburg et al., 2017)
+
+
+
+## Misc.
+
+### Compression
+
+Caching Hamiltonian components of _L_ = \[8, 9, 10, 11, 12\] and _periodic_ = \[True, False\], and _L_ = \[13, 14, 15\] and _periodic_ = \[False\]:
+- gzip consumes 10.8 MB.
+- lzma consumes 962 kB!
+
+1000 samples of `rho_A` for each of _L_ = \[8, 9, 10, 11, 12\], _W_ = \[0.5, 8.0\], and _n_ = \[1, 2, 3, 4, 5, 6\], training + random data:
+- gzip consumes 857 MB.
+- lzma consumes 760 MB.
+
+1000 samples of `EVW` for each of _L_ = \[8, 9, 10, 11, 12\] and _W_ = \[0.5, 8.0\], training + random data:
+- gzip consumes 463 MB.
+- lzma consumes 463 MB.
 
 
 
