@@ -222,7 +222,6 @@ def ED(H):
 
     return E, V
 
-
 def ED_sparse(H, k):
     """For comparison: obtain ground state energy from exact diagonalization.
 
@@ -256,7 +255,6 @@ def ED_sparse(H, k):
     assert is_sorted(np.abs(E)), 'Eigenvalues not sorted!'
 
     return E, V
-
 
 def EDs(Hs):
     """For comparison: obtain ground state energy from exact diagonalization.
@@ -294,7 +292,6 @@ def EDs(Hs):
         Vs.append(V)
 
     return Es, Vs
-
 
 def EDs_sparse(Hs, k):
     """For comparison: obtain ground state energy from exact diagonalization.
@@ -334,7 +331,6 @@ def EDs_sparse(Hs, k):
 
     return Es, Vs
 
-# @njit
 def select_N_eigenvalues(E, V, n, where='zeroest'):
     """
     Select N eigenvalues closest to the lowest, to zero, or to the highest.
