@@ -27,8 +27,8 @@ class MBLDatasetEVW(MBLDatasetBase):
         else:
             data = load_EVW_random( obj_name, L, n, periodic, num_EV)
     
-        if len(data) <= 10000:
-            raise RuntimeError('Insufficient data. Training data has length {} <= 10000.'.format(len(data)))
+        # if len(data) <= 10000:
+        #     raise RuntimeError('Insufficient data. Training data has length {} <= 10000.'.format(len(data)))
 
         self.MBL_params = MBL_params
         self.data = data

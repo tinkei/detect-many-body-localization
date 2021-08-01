@@ -22,9 +22,9 @@ class MBLDatasetH(MBLDatasetBase):
     def __init__(self, MBL_params, train=True, transform=None, **kwargs):
         super().__init__(MBL_params, train, transform)
 
-        obj_name = self.hparams['MBL']['obj_name']
-        L        = self.hparams['MBL']['L']
-        periodic = self.hparams['MBL']['periodic']
+        obj_name = MBL_params['obj_name']
+        L        = MBL_params['L']
+        periodic = MBL_params['periodic']
 
         self.MBL_params = MBL_params
         self.transform = transform
