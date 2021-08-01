@@ -2,10 +2,11 @@
 
 import numpy as np
 import torch
+from MBL_dataset_base import MBLDatasetBase
 from file_io import *
 
 
-class MBLDatasetBase():
+class MBLDatasetEVW(MBLDatasetBase):
     """Dataset for Many-Body Localization
 
     If in extended/ergodic phase, assign class label 0.
@@ -13,6 +14,7 @@ class MBLDatasetBase():
     """
 
     def __init__(self, MBL_params, train=True, transform=None, **kwargs):
+        super().__init__(MBL_params, train, transform)
 
         obj_name = MBL_params['obj_name']
         L        = MBL_params['L']
@@ -21,9 +23,9 @@ class MBLDatasetBase():
         num_EV   = MBL_params['num_EV']
 
         if train:
-            data = load_rho_train( obj_name, L, n, periodic, num_EV)
+            data = load_EVW_train( obj_name, L, n, periodic, num_EV)
         else:
-            data = load_rho_random( obj_name, L, n, periodic, num_EV)
+            data = load_EVW_random( obj_name, L, n, periodic, num_EV)
     
         if len(data) <= 10000:
             raise RuntimeError('Insufficient data. Training data has length {} <= 10000.'.format(len(data)))

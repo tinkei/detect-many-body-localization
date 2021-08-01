@@ -10,17 +10,17 @@ import pickle
 import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from MBL_dataset import MBLDataset
+from MBL_dataset_base import MBLDatasetBase
+from file_io import *
 
 
-class MBLModel(pl.LightningModule):
+
+class MBLModelBase(pl.LightningModule):
     """Model for Many Body Localization"""
 
     def __init__(self, hparams):
         """
         Initialize your model from a given dict containing all your hparams
-        Warning: Don't change the method declaration (i.e. by adding more
-            arguments), otherwise it might not work on the submission server
         """
         super().__init__()
         self.hparams = hparams
@@ -28,8 +28,6 @@ class MBLModel(pl.LightningModule):
         # Define all the layers of the CNN, the only requirements are:         #
         # 1. The network takes in a batch of images of shape (Nx1xWxH)         #
         # 2. It ends with a linear layer that represents the predicted phases. #
-        # Thus, the output layer needs to have shape (Nx2),                    #
-        # with 2 values representing each of the 15 keypoint (x, y) pairs      #
         ########################################################################
 
         ########################################################################
@@ -356,109 +354,15 @@ class MBLModel(pl.LightningModule):
         tensorboard_logs = {'val_loss': avg_loss, 'val_acc' : acc}
         return {'val_loss': avg_loss, 'val_acc': acc, 'log': tensorboard_logs}
 
-    def load_rho_train(self, obj_name, L, n, periodic, num_EV, data_dir):
-        """Load a list of reduced density matrices with W = {0.5, 8}.
-
-        Parameters
-        ----------
-        obj_name : str
-            A name you give to this object. Call it `rho_A`.
-        L : int
-            System size.
-        n : int
-            Number of consecutive spins sampled.
-        periodic : bool
-            Whether the Hamiltonian is periodic.
-        num_EV : int
-            Number of eigenvalues around zero being sampled.
-        data_dir : str, optional
-            Directory where the data is saved.
-
-        Return
-        ------
-        obj : list
-            A list of lists, where each reduced density matrix is paired with its disorder strength W.
-            i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-            Number of data must be a multiple of 10.
-        """
-
-        directory = os.path.join(data_dir, 'L={:02d}'.format(L), 'n={:02d}'.format(n), 'periodic={}'.format(periodic), 'num_EV={}'.format(num_EV))
-        os.makedirs(directory, exist_ok=True)
-
-        # Check if file exists, load the file, and increment suffix.
-        i = 0
-        data = []
-        while os.path.exists(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i))):
-            with gzip.open(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i)), 'rb') as handle:
-                data = data + pickle.load(handle)
-                if n >= 6 and len(data) >= 200000:
-                    return data # Don't have enough RAM to load 400000 samples.
-            i += 1
-
-        return data
-
-    def load_rho_valid(self, obj_name, L, n, periodic, num_EV, data_dir):
-        """Load a list of reduced density matrices with random W != {0.5, 8}.
-
-        Parameters
-        ----------
-        obj_name : str
-            A name you give to this object. Call it `rho_A`.
-        L : int
-            System size.
-        n : int
-            Number of consecutive spins sampled.
-        periodic : bool
-            Whether the Hamiltonian is periodic.
-        num_EV : int
-            Number of eigenvalues around zero being sampled.
-        data_dir : str, optional
-            Directory where the data is saved.
-
-        Return
-        ------
-        obj : list
-            A list of lists, where each reduced density matrix is paired with its disorder strength W.
-            i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-            Number of data must be a multiple of 10.
-        """
-
-        directory = os.path.join(data_dir, 'L={:02d}'.format(L), 'n={:02d}'.format(n), 'periodic={}'.format(periodic), 'num_EV={}'.format(num_EV))
-        os.makedirs(directory, exist_ok=True)
-
-        # Check if file exists, load the file, and increment suffix.
-        i = 0
-        data = []
-        while os.path.exists(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i))):
-            with gzip.open(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i)), 'rb') as handle:
-                data = data + pickle.load(handle)
-                if n >= 6 and len(data) >= 200000:
-                    return data # Don't have enough RAM to load 400000 samples.
-            i += 1
-
-        return data
-
     def prepare_data(self):
 
-        obj_name = self.hparams['MBL']['obj_name']
-        L        = self.hparams['MBL']['L']
-        n        = self.hparams['MBL']['n']
-        periodic = self.hparams['MBL']['periodic']
-        num_EV   = self.hparams['MBL']['num_EV']
-        rho_train_data_dir = self.hparams['MBL']['rho_train_data_dir']
-        rho_valid_data_dir = self.hparams['MBL']['rho_valid_data_dir']
-
-        data_train = self.load_rho_train(obj_name, L, n, periodic, num_EV, data_dir=rho_train_data_dir)
-        data_valid = self.load_rho_valid(obj_name, L, n, periodic, num_EV, data_dir=rho_valid_data_dir)
-        # if len(data_train) <= 10000:
-        #     raise RuntimeError('Insufficient data. Training data has length {} <= 10000.'.format(len(data_train)))
-        train_dataset = MBLDataset(
-            data=data_train,
+        train_dataset = MBLDatasetBase(
+            MBL_params=self.hparams['MBL'],
             train=True,
             transform=transforms.ToTensor(),
         )
-        valid_dataset = MBLDataset(
-            data=data_valid,
+        valid_dataset = MBLDatasetBase(
+            MBL_params=self.hparams['MBL'],
             train=False,
             transform=transforms.ToTensor(),
         )

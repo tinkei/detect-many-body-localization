@@ -8,9 +8,11 @@ import pickle
 import numpy as np
 from collections import OrderedDict
 from scipy.sparse import csr_matrix, kron
+from MBL_dataset_base import MBLDatasetBase
+from file_io import *
 
 
-class MBLHDataset():
+class MBLDatasetH(MBLDatasetBase):
     """Dataset for Many-Body Localization
 
     If in extended/ergodic phase, assign class label 0.
@@ -18,6 +20,12 @@ class MBLHDataset():
     """
 
     def __init__(self, MBL_params, train=True, transform=None, **kwargs):
+        super().__init__(MBL_params, train, transform)
+
+        obj_name = self.hparams['MBL']['obj_name']
+        L        = self.hparams['MBL']['L']
+        periodic = self.hparams['MBL']['periodic']
+
         self.MBL_params = MBL_params
         self.transform = transform
         self.J = 1
@@ -28,7 +36,7 @@ class MBLHDataset():
         else:
             self.Ws = MBL_params['Ws_valid']
 
-        self.H_xx, self.H_yy, self.H_zz, self.sx_list, self.sy_list, self.sz_list = MBLHDataset.build_H_ii(self.L, self.periodic)
+        self.H_xx, self.H_yy, self.H_zz, self.sx_list, self.sy_list, self.sz_list = MBLDatasetH.build_H_ii(self.L, self.periodic)
 
     def _get_image(self, idx, Ws):
         W = Ws[idx]
@@ -97,7 +105,7 @@ class MBLHDataset():
             Directory where the cache is located.
         """
 
-        param_str = MBLHDataset.dict_to_str(obj_params)
+        param_str = MBLDatasetH.dict_to_str(obj_params)
         os.makedirs(os.path.join(cache_dir, obj_name), exist_ok=True)
         with gzip.open(os.path.join(cache_dir, obj_name, param_str + '.pkl.gz'), 'wb') as handle:
             pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -117,7 +125,7 @@ class MBLHDataset():
             Directory where the cache is located.
         """
 
-        param_str = MBLHDataset.dict_to_str(obj_params)
+        param_str = MBLDatasetH.dict_to_str(obj_params)
         os.makedirs(os.path.join(cache_dir, obj_name), exist_ok=True)
         if os.path.isfile(os.path.join(cache_dir, obj_name, param_str + '.pkl.gz')):
             with gzip.open(os.path.join(cache_dir, obj_name, param_str + '.pkl.gz'), 'rb') as handle:
@@ -146,9 +154,9 @@ class MBLHDataset():
 
         obj_params = {'L': L}
 
-        sx_list = MBLHDataset.load_cache('sx_list', obj_params)
-        sy_list = MBLHDataset.load_cache('sy_list', obj_params)
-        sz_list = MBLHDataset.load_cache('sz_list', obj_params)
+        sx_list = MBLDatasetH.load_cache('sx_list', obj_params)
+        sy_list = MBLDatasetH.load_cache('sy_list', obj_params)
+        sz_list = MBLDatasetH.load_cache('sz_list', obj_params)
 
         if sx_list is None or sy_list is None or sz_list is None:
 
@@ -178,9 +186,9 @@ class MBLHDataset():
                 sy_list.append(Y)
                 sz_list.append(Z)
 
-            MBLHDataset.save_cache(sx_list, 'sx_list', obj_params)
-            MBLHDataset.save_cache(sy_list, 'sy_list', obj_params)
-            MBLHDataset.save_cache(sz_list, 'sz_list', obj_params)
+            MBLDatasetH.save_cache(sx_list, 'sx_list', obj_params)
+            MBLDatasetH.save_cache(sy_list, 'sy_list', obj_params)
+            MBLDatasetH.save_cache(sz_list, 'sz_list', obj_params)
 
         # else:
 
@@ -195,7 +203,7 @@ class MBLHDataset():
     @staticmethod
     def build_H_ii(L, periodic):
 
-        sx_list, sy_list, sz_list = MBLHDataset.build_si_list(L)
+        sx_list, sy_list, sz_list = MBLDatasetH.build_si_list(L)
 
         # ========================================
         # Start cached area: H_ii.
@@ -203,9 +211,9 @@ class MBLHDataset():
         
         obj_params = {'L': L, 'periodic': periodic}
 
-        H_xx = MBLHDataset.load_cache('H_xx', obj_params)
-        H_yy = MBLHDataset.load_cache('H_yy', obj_params)
-        H_zz = MBLHDataset.load_cache('H_zz', obj_params)
+        H_xx = MBLDatasetH.load_cache('H_xx', obj_params)
+        H_yy = MBLDatasetH.load_cache('H_yy', obj_params)
+        H_zz = MBLDatasetH.load_cache('H_zz', obj_params)
 
         if H_xx is None or H_yy is None or H_zz is None:
 
@@ -220,9 +228,9 @@ class MBLHDataset():
                 H_yy = H_yy + sy_list[i] * sy_list[(i + 1) % L]
                 H_zz = H_zz + sz_list[i] * sz_list[(i + 1) % L]
 
-            MBLHDataset.save_cache(H_xx, 'H_xx', obj_params)
-            MBLHDataset.save_cache(H_yy, 'H_yy', obj_params)
-            MBLHDataset.save_cache(H_zz, 'H_zz', obj_params)
+            MBLDatasetH.save_cache(H_xx, 'H_xx', obj_params)
+            MBLDatasetH.save_cache(H_yy, 'H_yy', obj_params)
+            MBLDatasetH.save_cache(H_zz, 'H_zz', obj_params)
 
         # else:
 
@@ -240,7 +248,7 @@ class MBLHDataset():
 
         # H_z is not cached due to randomness.
         H_z  = csr_matrix((2**L, 2**L))
-        h    = MBLHDataset.get_h(L, W)
+        h    = MBLDatasetH.get_h(L, W)
 
         for i in range(L):
             H_z = H_z + h[i] * sz_list[i]

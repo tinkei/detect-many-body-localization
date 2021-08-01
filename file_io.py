@@ -73,10 +73,11 @@ warnings.filterwarnings('ignore')
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print('PyTorch device:', device)
 
-from MBL_dataset import MBLDataset
-from MBL_model import MBLModel
-from MBL_H_dataset import MBLHDataset
-from MBL_H_model import MBLHModel
+# from MBL_dataset_base import MBLDatasetBase
+# from MBL_dataset_H import MBLDatasetH
+# from MBL_model_EVW import MBLModelEVW
+# from MBL_model_rho import MBLModelRho
+# from MBL_model_H import MBLModelH
 model_version = 1
 
 
@@ -551,6 +552,8 @@ def save_model(model, file_name, L, n, periodic, num_EV, directory=model_dir):
 
 def load_model(file_name, L, n, periodic, num_EV, directory=model_dir):
 
+    from MBL_model_rho import MBLModelRho
+
     directory = os.path.join(directory, 'L={:02d}'.format(L), 'n={:02d}'.format(n), 'periodic={}'.format(periodic), 'num_EV={}'.format(num_EV))
     os.makedirs(directory, exist_ok=True)
 
@@ -559,7 +562,7 @@ def load_model(file_name, L, n, periodic, num_EV, directory=model_dir):
         model_params = pickle.load(fp)
 
     hparams = model_params["hparams"]
-    model = MBLModel(hparams=hparams)
+    model = MBLModelRho(hparams=hparams)
     model.load_state_dict( model_params["state_dict"] )
     model.prepare_data()
 
@@ -667,6 +670,8 @@ def save_H_model(model, file_name, L, periodic, directory=H_model_dir):
 
 def load_H_model(file_name, L, periodic, directory=H_model_dir):
 
+    from MBL_model_H import MBLModelH
+
     directory = os.path.join(directory, 'L={:02d}'.format(L), 'periodic={}'.format(periodic))
     os.makedirs(directory, exist_ok=True)
 
@@ -675,7 +680,7 @@ def load_H_model(file_name, L, periodic, directory=H_model_dir):
         model_params = pickle.load(fp)
 
     hparams = model_params["hparams"]
-    model = MBLHModel(hparams=hparams)
+    model = MBLModelH(hparams=hparams)
     model.load_state_dict( model_params["state_dict"] )
     model.prepare_data()
 

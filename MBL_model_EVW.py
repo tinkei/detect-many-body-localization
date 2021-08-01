@@ -10,12 +10,12 @@ import pickle
 import numpy as np
 from torch.utils.data import DataLoader
 from torchvision import transforms
-from MBL_dataset_H import MBLDatasetH
+from MBL_dataset_EVW import MBLDatasetEVW
 from MBL_model_base import MBLModelBase
 from file_io import *
 
 
-class MBLModelH(MBLModelBase):
+class MBLModelEVW(MBLModelBase):
     """Model for Many Body Localization"""
 
     def __init__(self, hparams):
@@ -23,22 +23,21 @@ class MBLModelH(MBLModelBase):
         Initialize your model from a given dict containing all your hparams
         """
         super().__init__(hparams)
-        self.hparams = hparams
 
     def prepare_data(self):
 
-        train_dataset = MBLDatasetH(
+        train_dataset = MBLDatasetEVW(
             MBL_params=self.hparams['MBL'],
             train=True,
             transform=transforms.ToTensor(),
         )
-        valid_dataset = MBLDatasetH(
+        valid_dataset = MBLDatasetEVW(
             MBL_params=self.hparams['MBL'],
             train=False,
             transform=transforms.ToTensor(),
         )
-        print("Number of training samples (meaningless, samples are dynamic and random):", len(train_dataset))
-        print("Number of validation samples (meaningless, samples are dynamic and random):", len(valid_dataset))
+        print("Number of training samples:", len(train_dataset))
+        print("Number of validation samples:", len(valid_dataset))
 
         # assign to use in dataloaders
         self.dataset = {}

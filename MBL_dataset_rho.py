@@ -2,10 +2,11 @@
 
 import numpy as np
 import torch
+from MBL_dataset_base import MBLDatasetBase
 from file_io import *
 
 
-class MBLDatasetBase():
+class MBLDatasetRho(MBLDatasetBase):
     """Dataset for Many-Body Localization
 
     If in extended/ergodic phase, assign class label 0.
@@ -13,6 +14,7 @@ class MBLDatasetBase():
     """
 
     def __init__(self, MBL_params, train=True, transform=None, **kwargs):
+        super().__init__(MBL_params, train, transform)
 
         obj_name = MBL_params['obj_name']
         L        = MBL_params['L']
