@@ -21,7 +21,7 @@ class MBLDatasetH(MBLDatasetBase):
     """
 
     def __init__(self, MBL_params, train=True, transform=None, **kwargs):
-        super().__init__(MBL_params, train, transform)
+        # super().__init__(MBL_params, train, transform)
 
         obj_name = MBL_params['obj_name']
         L        = MBL_params['L']
