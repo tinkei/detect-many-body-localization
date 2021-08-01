@@ -573,7 +573,7 @@ def batch_gen_rho_data_core(L, Ws, J=1, periodic=False, num_Hs=1000, num_EV=5, m
 
                         if n not in rho_As:
                             rho_As[n] = []
-                        rho_As[n].append([rho_A.astype(np.float32), W])
+                        rho_As[n].append([rho_A.astype(np.float32), W]) # .astype(np.complex64)
 
                     # Shorten n:
                     if parity % 3 == 0:
@@ -698,7 +698,7 @@ def batch_gen_EVW_data_core(L, Ws, J=1, periodic=False, num_Hs=1000, num_EV=5):
 
         for E0, V0 in zip(E0s, V0s): # Still an array of `num_EV` eigenvectors per E0, V0.
             for i, E in enumerate(E0): # Flatten list of arrays.
-                EVWs.append((E0[i], V0[:,i], W))
+                EVWs.append((E0[i], V0[:,i].astype(np.complex64), W))
 
     return EVWs
 
