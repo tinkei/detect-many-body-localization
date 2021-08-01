@@ -47,7 +47,7 @@ class MBLDatasetBase():
         W = data[idx][1]
         # If in extended/ergodic phase, assign class label 0.
         # If in localized phase, assign class label 1.
-        if W <= 3.5:
+        if W <= 3.0:
             label = 0
         else:
             label = 1
