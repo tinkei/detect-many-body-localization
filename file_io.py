@@ -32,7 +32,7 @@ from collections import OrderedDict
 running_on_colab = (os.getenv('running_on_colab', 'False') == 'True')
 
 if running_on_colab:
-    data_root             = 'drive/MyDrive/Colab Data/CMMP/'
+    data_root             = 'drive/MyDrive/Colab Data/MBL/'
     sys.path.append(data_root)
 else:
     data_root             = './'
@@ -240,7 +240,7 @@ def load_ED(obj_name, L, W, periodic, data_dir=ED_data_dir):
 # Store Reduced Density Matrix.
 # ============================================================
 
-def save_rho_train(obj, obj_name, L, n, periodic, num_EV, data_dir=rho_train_data_dir):
+def save_rho_train( obj, obj_name, L, n, periodic, num_EV, data_dir=rho_train_data_dir):
     """Save a list of reduced density matrices with W = {0.5, 8}.
 
     Parameters
@@ -308,7 +308,7 @@ def save_rho_random(obj, obj_name, L, n, periodic, num_EV, data_dir=rho_random_d
     with gzip.open(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i)), 'wb') as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-def load_rho_train(obj_name, L, n, periodic, num_EV, data_dir=rho_train_data_dir):
+def load_rho_train( obj_name, L, n, periodic, num_EV, data_dir=rho_train_data_dir):
     """Load a list of reduced density matrices with W = {0.5, 8}.
 
     Parameters
@@ -392,17 +392,16 @@ def load_rho_random(obj_name, L, n, periodic, num_EV, data_dir=rho_random_data_d
 # Store tuple (eigenvalue, eigenvector, disorder strength).
 # ============================================================
 
-def save_EVW_train(obj, obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
-    """Save a list of reduced density matrices with W = {0.5, 8}.
+def save_EVW_train( obj, obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
+    """Save a list of (eigenvalue, eigenvector, disorder strength) tuples with W = {0.5, 8}.
 
     Parameters
     ----------
     obj : list
-        A list of lists, where each reduced density matrix is paired with its disorder strength W.
-        i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-        Number of data must be a multiple of 10.
+        A list of (eigenvalue, eigenvector, disorder strength) tuples.
+        i.e. obj[i][0] is an eigenvalue, obj[i][1] is a 1D numpy.ndarray of the corresponding eigenvector, and obj[i][2] is the disorder strength used to generate it.
     obj_name : str
-        A name you give to this object. Call it `rho_A`.
+        A name you give to this object. Call it `EVW`.
     L : int
         System size.
     periodic : bool
@@ -425,16 +424,15 @@ def save_EVW_train(obj, obj_name, L, periodic, num_EV, data_dir=EVW_train_data_d
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def save_EVW_random(obj, obj_name, L, periodic, num_EV, data_dir=EVW_random_data_dir):
-    """Save a list of reduced density matrices with random W != {0.5, 8}.
+    """Save a list of (eigenvalue, eigenvector, disorder strength) tuples with random W != {0.5, 8}.
 
     Parameters
     ----------
     obj : list
-        A list of lists, where each reduced density matrix is paired with its disorder strength W.
-        i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-        Number of data must be a multiple of 10.
+        A list of (eigenvalue, eigenvector, disorder strength) tuples.
+        i.e. obj[i][0] is an eigenvalue, obj[i][1] is a 1D numpy.ndarray of the corresponding eigenvector, and obj[i][2] is the disorder strength used to generate it.
     obj_name : str
-        A name you give to this object. Call it `rho_A`.
+        A name you give to this object. Call it `EVW`.
     L : int
         System size.
     periodic : bool
@@ -456,13 +454,13 @@ def save_EVW_random(obj, obj_name, L, periodic, num_EV, data_dir=EVW_random_data
     with gzip.open(os.path.join(directory, obj_name + '-{:09d}.pkl.gz'.format(i)), 'wb') as handle:
         pickle.dump(obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-def load_EVW_train(obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
-    """Load a list of reduced density matrices with W = {0.5, 8}.
+def load_EVW_train( obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
+    """Load a list of (eigenvalue, eigenvector, disorder strength) tuples with W = {0.5, 8}.
 
     Parameters
     ----------
     obj_name : str
-        A name you give to this object. Call it `rho_A`.
+        A name you give to this object. Call it `EVW`.
     L : int
         System size.
     periodic : bool
@@ -475,9 +473,8 @@ def load_EVW_train(obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
     Return
     ------
     obj : list
-        A list of lists, where each reduced density matrix is paired with its disorder strength W.
-        i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-        Number of data must be a multiple of 10.
+        A list of (eigenvalue, eigenvector, disorder strength) tuples.
+        i.e. obj[i][0] is an eigenvalue, obj[i][1] is a 1D numpy.ndarray of the corresponding eigenvector, and obj[i][2] is the disorder strength used to generate it.
     """
 
     directory = os.path.join(data_dir, 'L={:02d}'.format(L), 'periodic={}'.format(periodic), 'num_EV={}'.format(num_EV))
@@ -494,12 +491,12 @@ def load_EVW_train(obj_name, L, periodic, num_EV, data_dir=EVW_train_data_dir):
     return data
 
 def load_EVW_random(obj_name, L, periodic, num_EV, data_dir=EVW_random_data_dir):
-    """Load a list of reduced density matrices with random W != {0.5, 8}.
+    """Load a list of (eigenvalue, eigenvector, disorder strength) tuples with random W != {0.5, 8}.
 
     Parameters
     ----------
     obj_name : str
-        A name you give to this object. Call it `rho_A`.
+        A name you give to this object. Call it `EVW`.
     L : int
         System size.
     periodic : bool
@@ -512,9 +509,8 @@ def load_EVW_random(obj_name, L, periodic, num_EV, data_dir=EVW_random_data_dir)
     Return
     ------
     obj : list
-        A list of lists, where each reduced density matrix is paired with its disorder strength W.
-        i.e. obj[i][0] is a 2D numpy.ndarray of the reduced density matrix, and obj[i][1] is the disorder strength used to generate it.
-        Number of data must be a multiple of 10.
+        A list of (eigenvalue, eigenvector, disorder strength) tuples.
+        i.e. obj[i][0] is an eigenvalue, obj[i][1] is a 1D numpy.ndarray of the corresponding eigenvector, and obj[i][2] is the disorder strength used to generate it.
     """
 
     directory = os.path.join(data_dir, 'L={:02d}'.format(L), 'periodic={}'.format(periodic), 'num_EV={}'.format(num_EV))
@@ -685,12 +681,6 @@ def load_H_model(file_name, L, periodic, directory=H_model_dir):
 
     return model.to(device)
 
-
-
-# ============================================================
-# Store Hamiltonian classifier evaluation output.
-# ============================================================
-
 def H_model_exists(file_name, L, periodic, directory=H_model_dir):
 
     directory = os.path.join(directory, 'L={:02d}'.format(L), 'periodic={}'.format(periodic))
@@ -698,6 +688,12 @@ def H_model_exists(file_name, L, periodic, directory=H_model_dir):
 
     model_path = os.path.join(directory, file_name)
     return os.path.exists(model_path)
+
+
+
+# ============================================================
+# Store Hamiltonian classifier evaluation output.
+# ============================================================
 
 def save_H_eval_random(obj, model_version, L, periodic, data_dir=H_eval_random_data_dir):
     """Save model predictions of random W != {0.5, 8}.
