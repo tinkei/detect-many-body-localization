@@ -130,3 +130,12 @@ dmypy.json
 
 # Repo-specific
 cache/
+ED_data/
+EVW_train_data/
+EVW_random_data/
+rho_train_data/
+rho_random_data/
+models/
+eval_random_data/
+H_models/
+H_eval_random_data/
