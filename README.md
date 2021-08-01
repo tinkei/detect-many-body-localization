@@ -1,8 +1,14 @@
 # Detect Many Body Localization
 
-Python code that generates eigenvectors / reduced density matrices of a 1D Heisenberg spin chain with a random field, using exact diagonalization. 
+Many Body Localization (MBL) is a phenomenon whereby isolated many body systems do not thermalize, against the predictions of statistical mechanics. 
+They exhibit a phase transition depending on a disorder strength _W_. 
+
+By considering reduced density matrices of infinite-temperature eigenstates (_E_ &#x2248; 0) as images, 
+as generated from a 1D Heisenberg spin chain with a random field, 
+this code uses a classifier neural network's output probability to fit a critical disorder strength _W<sub>c</sub>_ of the phase transition. 
 Eigenstates generated from disorder strengths _W_ = 0.5 and _W_ = 8.0 are stored as training data for a PyTorch CNN. 
-The critical disorder strength _W<sub>c</sub>_ of the phase transition is determined by using the CNN to detect to classify samples with random _W_.
+_W<sub>c</sub>_ is then determined by using the CNN to detect to classify samples with random _W_.
+Various scaling with _W<sub>c</sub>_ are illustrated.
 
 The process is orchestrated by three sets of Jupyter Notebooks:
 * Data Generation
