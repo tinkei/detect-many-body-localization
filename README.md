@@ -1,3 +1,11 @@
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/tinkei/detect-many-body-localization)
+![GitHub](https://img.shields.io/github/license/tinkei/detect-many-body-localization)
+![GitHub top language](https://img.shields.io/github/languages/top/tinkei/detect-many-body-localization)
+![GitHub repo size](https://img.shields.io/github/repo-size/tinkei/detect-many-body-localization)
+![GitHub tag checks state](https://img.shields.io/github/checks-status/tinkei/detect-many-body-localization/v1.0.0)
+![Gitlab code coverage](https://img.shields.io/gitlab/coverage/tinkei/detect-many-body-localization/master)
+![CodeQL Workflow](https://github.com/tinkei/detect-many-body-localization/actions/workflows/codeql-analysis.yml/badge.svg)
+
 # Detect Many Body Localization
 
 Many Body Localization (MBL) is a phenomenon whereby isolated many body systems do not thermalize, against the predictions of statistical mechanics. 
